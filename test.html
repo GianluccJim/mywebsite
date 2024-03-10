@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Get User Location</title>
+</head>
+<body>
+
+<a href="#" id="getLocation">Click here to get your location</a>
+
+<script>
+document.getElementById('getLocation').onclick = function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendPositionToServer);
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+};
+
+function sendPositionToServer(position) {
+    var latitude = position.coords.latitude;
+    var longitude = position.coords.longitude;
+    
+    // Send the location data to the server
+    fetch('http://localhost:3000/save_location', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ latitude: latitude, longitude: longitude }),
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Your location has been sent to the server.");
+        } else {
+            alert("Failed to send location data to the server.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred while sending location data to the server.");
+    });
+}
+</script>
+
+</body>
+</html>
+
+
